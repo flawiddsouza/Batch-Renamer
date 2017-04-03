@@ -2,20 +2,20 @@
 using System.IO;
 using System;
 using System.Collections.Generic;
+using BatchRenamer.Windows;
 
 namespace BatchRenamer
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private string[] FromArr { get; set; }
         private string[] ToArr { get; set; }
+        private Logger MyLogger;
 
         public MainWindow()
         {
             InitializeComponent();
+            MyLogger = Logger.Instance;
 
             PathBox.TextChanged += ValidatePath_TextChanged;
             From.TextChanged += ValidateFromTo_TextChanged;
@@ -72,7 +72,9 @@ namespace BatchRenamer
 
             if (pathsThatDontExist.Count > 0)
             {
-                MessageBox.Show("The following files are not files or do not exist:" + "\n\n" + string.Join(Environment.NewLine, pathsThatDontExist) + "\n\n" + "Please rectify this error!");
+                string renameError = "The following files are not files or do not exist:" + "\n\n" + string.Join(Environment.NewLine, pathsThatDontExist) + "\n\n" + "Please rectify this error!";
+                MyLogger.WriteLog(renameError);
+                MessageBox.Show(renameError);
                 return;
             }
 
@@ -85,15 +87,38 @@ namespace BatchRenamer
                     to = Path.ChangeExtension(to, null); // get filename with path without the extension
                     to = to + Path.GetExtension(from);
                     File.Move(from, to);
+                    MyLogger.WriteLog("Renamed " + from + " to " + to);
                 }
                 else
                 {
                     File.Move(from, to);
+                    MyLogger.WriteLog("Renamed " + from + " to " + to);
                 }
                 
             }
 
-            MessageBox.Show("All files have been successfully renamed!");
+            string renameSuccess = "All files have been successfully renamed!";
+            MyLogger.WriteLog(renameSuccess);
+            MessageBox.Show(renameSuccess);
+        }
+
+        private void ViewLogBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (Log.IsOpen)
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Log)
+                    {
+                        window.Activate();
+                    }
+                }
+            }
+            else
+            {
+                var logWindow = new Log();
+                logWindow.Show();
+            }
         }
     }
 }

@@ -51,17 +51,22 @@
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Button
-                x:Name="RenameBtn"
+                Click="ViewLogBtn_Click"
                 Grid.Column="0"
+                Padding="5">View Log</Button>
+            <Button
+                x:Name="RenameBtn"
+                Grid.Column="1"
                 Padding="5"
                 IsEnabled="False">Rename Files</Button>
             <CheckBox
                 x:Name="KeepExtensionChkBox"
-                Grid.Column="1"
+                Grid.Column="2"
                 VerticalContentAlignment="Center"
                 Margin="25 5">Keep extension</CheckBox>
         </Grid>
